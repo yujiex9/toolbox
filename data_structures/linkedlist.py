@@ -141,3 +141,147 @@ class LinkedList:
         for node in nodes:
             list_.append(node)
         return list_
+
+
+# Continued research on LinkedList
+# Chpt 7, Data Structures and Algos in Python
+
+
+
+
+
+
+# Implementations of Stack/Queue based on variations of LinkedList
+# ToDo: move the code below to either files of corresponding data structures or a centralised place
+class EmptyLinkedStackError(Exception):
+    pass
+
+
+class EmptyLinkedQueueError(Exception):
+    pass
+
+
+class EmptyCircularQueueError(Exception):
+    pass
+
+
+class _Node:
+    __slots__ = '_value', '_next'
+
+    def __init__(self, value, next):
+        self._value = value
+        self._next = next
+
+
+class LinkedStack:
+    """
+    Stack impl based on a singly linked list
+    """
+    def __init__(self):
+        self._head = None
+        self._size = 0
+
+    def __len__(self):
+        return self._size
+
+    def is_empty():
+        return self._size == 0
+
+    def top(self):
+        if self.is_empty():
+            raise EmptyLinkedStackError('Empty LinkedStack')
+        return self._head._value
+
+    def push(self, new_item):
+        self._head = _Node(new_item, self._head)
+        self._size += 1
+
+    def pop(self):
+        if self.is_empty():
+            raise EmptyLinkedStackError('Empty LinkedStack')
+        ret = self._head
+        self._head = self._head._next
+        ret._next = None
+        self._size -= 1
+        return ret._value
+
+
+class LinkedQueue:
+    """
+    Queue impl based on a singly linked list
+    """
+    def __init__(self):
+        self._head = None
+        self._tail = None
+        self._size = 0
+
+    def __len__(self):
+        return self._size
+
+    def is_empty(self):
+        return self._size == 0
+
+    def first(self):
+        if self.is_empty():
+            raise EmptyLinkedQueueError('Empty LinkedQueue')
+        return self._head._value
+
+    def enqueue(self, new_item):
+        new_node = _Node(new_node, None)
+        if self.is_empty():
+            self._head = new_node
+        else:
+            self._tail._next = new_node
+        self._tail = new_node
+        self._size += 1
+
+    def dequeue(self):
+        if self.is_empty():
+            raise EmptyLinkedQueueError('Empty LinkedQueue')
+        ret = self._head
+        self._head = self._head._next
+        self._size -= 1
+        if self.is_empty():
+            self._tail = None
+        return ret._value
+
+
+class CircularQueue:
+    def __init__(self):
+        self._size = 0
+
+    def __len__(self):
+        return self._size
+
+    def is_empty():
+        return self._size == 0
+
+    def first(self):
+        if self.is_empty():
+            raise EmptyCircularQueueError('Empty LinkedQueue')
+        return self._tail._next._value
+
+    def enqueue(self, new_item):
+        new_node = _Node(new_item, None)
+        if self.is_empty():
+            new_node._next = new_node
+        else:
+            new_node._next = self._tail._next
+            self._tail._next = new_node
+        self._tail = new_node
+        self._size += 1
+
+    def dequeue(self):
+        if self.is_empty():
+            raise EmptyCircularQueueError('Empty LinkedQueue')
+        ret = self._tail._next
+        if self._size == 1:
+            self._tail = None
+        else:
+            self._tail._next = ret._next
+        self._size -= 1
+        return ret._value
+
+    def rotate(self):
+        if not self.is_empty():
+            self._tail = self._tail._next
